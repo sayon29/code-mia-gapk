@@ -33,13 +33,34 @@ def load_public_test(config: dict[str, Any]):
         ) from exc
 
 
+from typing import Any
+
+
 def membership_label(value: Any) -> int:
     if isinstance(value, bool):
         return int(value)
-    if isinstance(value, str):
-        value = value.strip()
-        if value in {"0", "1"}:
-            return int(value)
+
     if value in {0, 1}:
         return int(value)
-    raise ValueError(f"membership must be exactly 0 or 1; got {value!r}")
+
+    if isinstance(value, str):
+        normalized = value.strip().lower()
+
+        mapping = {
+            "0": 0,
+            "1": 1,
+            "member": 1,
+            "non-member": 0,
+        }
+
+        if normalized in mapping:
+            return mapping[normalized]
+
+    allowed = (
+        "0, 1, False, True, '0', '1', "
+        "'member', or 'non-member'"
+    )
+
+    raise ValueError(
+        f"membership must be one of {allowed}; got {value!r}"
+    )
