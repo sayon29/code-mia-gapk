@@ -1,0 +1,10 @@
+# Kaggle normally supplies torch, numpy, matplotlib and scikit-learn.
+# Installing this file does not force a PyTorch reinstall.
+transformers>=4.39,<5
+datasets>=2.18,<4
+huggingface-hub>=0.21
+nltk>=3.8
+PyYAML>=6.0
+psutil>=5.9
+pytest>=7.4
+

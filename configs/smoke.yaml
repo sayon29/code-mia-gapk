@@ -1,0 +1,36 @@
+experiment:
+  name: gapk_starcoder2_3b_python_smoke
+  seed: 42
+  output_dir: outputs/smoke
+dataset:
+  id: AISE-TUDelft/Poisoned-Chalice
+  revision: ae3f42011bf55ab2910c83a342caf8a3c02bcd5d
+  config: Python
+  split: test
+  text_column: content
+  label_column: membership
+  local_path: null
+  offline: false
+  members: 20
+  non_members: 20
+canonicalization:
+  word_units: 32
+  tokenizer: nltk_word_tokenize_preserve_line
+model:
+  id: bigcode/starcoder2-3b
+  revision: 733247c55e3f73af49ce8e9c7949bf14af205928
+  tokenizer_id: bigcode/starcoder2-3b
+  tokenizer_revision: 733247c55e3f73af49ce8e9c7949bf14af205928
+  local_path: null
+  offline: false
+  trust_remote_code: false
+  dtype: auto
+  quantization: none
+attack:
+  gap_fraction: 0.20
+  smoothing_window: 3
+  variance_floor: 1.0e-8
+  batch_size: 1
+runtime:
+  allow_cpu_attack: false
+  cuda_cache_cleanup_interval: 0
