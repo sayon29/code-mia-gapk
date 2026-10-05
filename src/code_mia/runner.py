@@ -66,7 +66,7 @@ def attack(config: dict, run_dir: Path, fp: str) -> list[dict]:
         raise RuntimeError("CUDA is unavailable. Manifest/tests remain usable; set runtime.allow_cpu_attack=true only for an explicit slow CPU run.")
     memory = estimate_memory(config, max(row["starcoder_token_count"] for row in manifest))
     logger.info("Pre-load memory estimate: %s", json.dumps(memory, sort_keys=True))
-    loaded = load_model_and_tokenizer(config)
+    loaded = load_model_and_tokenizer(config["model"])
     scores_path = run_dir / "scores.jsonl"
     cached_rows = {row["sample_id"]: row for row in read_jsonl(scores_path)}
     results: list[dict] = []

@@ -1,6 +1,6 @@
 # code-mia-gapk
 
-An auditable, small-scale implementation of the **vanilla Gap-K%** membership-inference baseline for the original, unfine-tuned `bigcode/starcoder2-3b`, evaluated on the Python public `test` split of `AISE-TUDelft/Poisoned-Chalice`. The smoke run selects 20 members and 20 non-members; the debug run selects 100+100. Neither is a definitive scientific result.
+An auditable, small-scale implementation of the **vanilla Gap-K%** membership-inference baseline for the original, unfine-tuned `bigcode/starcoder2-3b`, evaluated on the Python public `test` split of `AISE-TUDelft/Poisoned-Chalice`. The smoke run selects 20 members and 20 non-members; the debug run selects 500+500. Neither is a definitive scientific result.
 
 Membership inference asks whether an example was likely present in a model's pretraining data. In Poisoned Chalice, `membership == 1` is treated as member and `membership == 0` as non-member. This repository evaluates the original pretrained target specifically: it does not fine-tune, add code-specific transformations, or run a larger model.
 
@@ -60,14 +60,14 @@ code-mia validate-run --run-dir outputs/smoke
 
 Re-run the same command after interruption. Successful compatible samples are reused; mismatched hashes, revisions, tokenizer, input protocol, K, smoothing, dtype, quantization, implementation/config fingerprint, or failed rows are recomputed. Quantized runs, if explicitly enabled (`4bit` or `8bit`, requiring bitsandbytes), are distinct experimental conditions and should use a separate output directory.
 
-Metrics are ROC-AUC and empirical (non-interpolated) TPR at 5%, 1%, and 0.1% FPR. With 100 non-members, one false positive is 1%; 0.1% is unresolved. The JSON and Markdown explicitly warn that the reported 0.1% number is merely the best observed zero-FP point.
+Metrics are ROC-AUC and empirical (non-interpolated) TPR at 5%, 1%, and 0.1% FPR. With 500 non-members, one false positive is 0.2%; 0.1% is unresolved. The JSON and Markdown explicitly warn that the reported 0.1% number is merely the best observed zero-FP point.
 
 ## Kaggle
 
 1. Create a Kaggle notebook, enable a GPU under notebook settings, and enable Internet for the first download.
 2. Upload this repository so it is available as `/kaggle/working/code-mia-gapk`, or set the real Git URL in the notebook clone cell.
 3. Open `notebooks/kaggle_debug.ipynb` and run the setup, cache, install, environment, and test cells first.
-4. Run the manifest cell, inspect its audit, then run the smoke cell. Run the separate 100+100 cell only when ready.
+4. Run the manifest cell, inspect its audit, then run the smoke cell. Run the separate 500+500 cell only when ready.
 
 The notebook sets:
 
@@ -78,7 +78,7 @@ HF_DATASETS_CACHE=/kaggle/working/hf-cache/datasets
 TOKENIZERS_PARALLELISM=false
 ```
 
-It does not reinstall PyTorch explicitly. The loader prefers BF16 only when PyTorch reports genuine support; T4/P100 therefore use FP16. One GPU is used even if two are visible. Before loading, the run log records dtype, free VRAM, sequence length, approximate full-float32-logit size, and a conservative fit estimate. A StarCoder2-3B half-precision run typically needs roughly 7–10 GB peak VRAM depending on software/sequence length. After assets are cached, a 20+20 smoke run may take several minutes to tens of minutes; 100+100 may take roughly one to several hours depending on GPU and download/cache state. These are planning estimates, not measured results from this repository.
+It does not reinstall PyTorch explicitly. The loader prefers BF16 only when PyTorch reports genuine support; T4/P100 therefore use FP16. One GPU is used even if two are visible. Before loading, the run log records dtype, free VRAM, sequence length, approximate full-float32-logit size, and a conservative fit estimate. A StarCoder2-3B half-precision run typically needs roughly 7–10 GB peak VRAM depending on software/sequence length. After assets are cached, a 20+20 smoke run may take several minutes to tens of minutes; 500+500 may take several hours depending on GPU and download/cache state. These are planning estimates, not measured results from this repository.
 
 The final notebook cell writes `/kaggle/working/code-mia-gapk-results.zip`.
 
@@ -103,7 +103,7 @@ Each completed run contains original/resolved configuration, fingerprint, enviro
 
 Poisoned Chalice separation can reflect much more than memorization: source/distribution shift (including The Stack Edu versus The Heap), collection time, licences, library/API usage, code length, duplicates or near-duplicates, and residual corpus differences. A short 32-word prefix emphasizes headers, comments, licences, and imports. True exposure is uncertain, and the released public test need not reproduce the original hidden leaderboard evaluation. These factors can make a classifier distinguish corpora rather than membership. Report results as a baseline diagnostic with complete provenance, not proof about an individual sample.
 
-The 20+20 smoke run validates plumbing only. The 100+100 run has coarse low-FPR resolution and high statistical uncertainty. This repository intentionally omits SimMIA, Code-SimMIA, Code-Gap-K%, fine-tuning, other languages, 7B models, and full-dataset experiments.
+The 20+20 smoke run validates plumbing only. The 500+500 run still has limited low-FPR resolution and statistical uncertainty. This repository intentionally omits SimMIA, Code-SimMIA, Code-Gap-K%, fine-tuning, other languages, 7B models, and full-dataset experiments.
 
 ## References
 

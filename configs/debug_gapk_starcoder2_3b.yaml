@@ -11,8 +11,8 @@ dataset:
   label_column: membership
   local_path: null
   offline: false
-  members: 100
-  non_members: 100
+  members: 500
+  non_members: 500
 canonicalization:
   word_units: 32
   tokenizer: nltk_word_tokenize_preserve_line
@@ -34,4 +34,3 @@ attack:
 runtime:
   allow_cpu_attack: false
   cuda_cache_cleanup_interval: 0
-
